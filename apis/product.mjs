@@ -1,11 +1,9 @@
 import express from 'express';
 import { userModel, productModel } from './../dbRepo/models.mjs'
-import mongoose from 'mongoose';
-
 const router = express.Router()
 
 
-router.post("/product", (req, res) => {
+router.post("/api/v1/product", (req, res) => {
 
     const body = req.body;
     // validation
@@ -20,13 +18,14 @@ router.post("/product", (req, res) => {
         return;
     }
   
+  
+  
     
   
     productModel.create({
         name: body.name,
         price: body.price,
         description: body.description,
-        owner:new mongoose.Types.ObjectId(body.token._id)
     },
         (err, saved) => {
             if (!err) {
@@ -43,21 +42,12 @@ router.post("/product", (req, res) => {
         })
   })
   
-router.get("/products", (req, res) => {
-    const userId = new mongoose.Types.ObjectId(req.body.token._id);
-
-      productModel.find({ owner: userId, isDeleted: false },
-        {},
-         {
-            sort: { "_id": -1 },
-            limit: 100,
-            skip: 0
-        },
-         (err, data) => {
+router.get("/api/v1/products", (req, res) => {
+      productModel.find({}, (err, data) => {
         if (!err) {
           res.send({
             message: "got all products successfully",
-            data: data
+            data: data,
           });
         } else {
           res.status(500).send({
@@ -67,7 +57,7 @@ router.get("/products", (req, res) => {
       });
     });
   
-router.delete('/product/:id', (req, res) => {
+router.delete('/api/v1/product/:id', (req, res) => {
       const id = req.params.id;
   
       productModel.deleteOne({ editingId: id }, (err, deletedData) => {
@@ -94,7 +84,7 @@ router.delete('/product/:id', (req, res) => {
       });
   })
   
-router.put('/product/:id', async (req, res) => {
+router.put('/api/v1/product/:id', async (req, res) => {
   
       const body = req.body;
       const id = req.params.id;

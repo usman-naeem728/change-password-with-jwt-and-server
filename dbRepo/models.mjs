@@ -5,7 +5,6 @@ let productSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: Number,
     description: String,
-    owner:{type: mongoose.ObjectId, required: true},
     createdOn: { type: Date, default: Date.now }
 });
  export const productModel = mongoose.model('products', productSchema);

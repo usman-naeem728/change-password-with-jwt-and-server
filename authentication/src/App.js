@@ -19,8 +19,7 @@ import Signup from './components/signup';
 import Login from './components/login';
 import Home from './components/home';
 import Products from './components/products';
-
-
+import ChangePassword from './components/ChangePassword';
 
 
 
@@ -33,6 +32,7 @@ function App() {
   const [auth, setAuth] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  console.log("state",state)
   const handleChange = (event) => {
     setAuth(event.target.checked);
   };
@@ -47,10 +47,10 @@ function App() {
 
   const logoutHandler = async () => {
     try {
-      let response = await axios.post(`${state.baseUrl}/logout`, {
+      let response = await axios.post(`${state.baseUrl}/api/v1/logout`, {
         withCredentials: true
       })
-      console.log("response: ", response);
+      // console.log("response: ", response);
 
       dispatch({
         type: 'USER_LOGOUT'
@@ -77,7 +77,8 @@ function App() {
           }
         })
 
-        console.log("response: ", response);
+        // console.log("response: ", response);
+
 
         dispatch({
           type: 'USER_LOGIN',
@@ -168,9 +169,12 @@ function App() {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>{state.user.firstName} {state.user.lastName}</MenuItem>
+                  <MenuItem onClick={handleClose}>Name: {state?.user?.firstName} {state?.user?.lastName}</MenuItem>
+                  <MenuItem onClick={handleClose}>Email: {state?.user?.email}</MenuItem>
                   <MenuItem onClick={handleClose}>My account</MenuItem>
                   <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+                  <Link to={`/change-password`} ><Button variant="contained">Change Password</Button></Link>
+
                 </Menu>
               </div>
               :
@@ -186,6 +190,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path='*' element={<Navigate to="/" replace={true} />}></Route>
         </Routes>
         :
         null
@@ -195,6 +201,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="Signup" element={<Signup />} />
+          <Route path='*' element={<Navigate to="/" replace={true} />}></Route>
         </Routes> :
         null
       }

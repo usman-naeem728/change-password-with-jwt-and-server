@@ -34,27 +34,27 @@ function Copyright(props) {
 const theme = createTheme();
 
 
-function Login() {
+function ChangePassword() {
 
     let { state, dispatch } = useContext(GlobalContext);
-    const [email, setEmail] = useState("");
+    const [oldpassword, setoldpassword] = useState("");
     const [password, setPassword] = useState("");
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         console.log({
-            email: data.get('email'),
+            oldpassword: data.get('oldpassword'),
             password: data.get('password'),
         });
     };
 
-    const loginHandler = async (e) => {
+    const proceedChangePassword = async (e) => {
 
         e.preventDefault();
 
         try {
             let response = await axios.post(`${state.baseUrl}/api/v1/login`, {
-                email: email,
+                oldpassword: oldpassword,
                 password: password
             }, {
                 withCredentials: true
@@ -72,7 +72,7 @@ function Login() {
             dispatch({
                 type: 'USER_LOGIN',
                 payload: response.data.profile
-              })
+            })
 
             console.log("Login  successful");
 
@@ -99,11 +99,7 @@ function Login() {
 
 
     return (
-
-
-
         <>
-
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
@@ -119,30 +115,44 @@ function Login() {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
-                            Sign in
+                           Change Password
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
+                                id="curentpassword"
+                                type="password"
+                                label="Current Password"
+                                name="oldpassword"
+                                autoComplete="password"
                                 autoFocus
                                 onChange={(e) => {
-                                    setEmail(e.target.value)
+                                    setoldpassword(e.target.value)
                                 }}
                             />
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
+                                name="new-password"
+                                label="New Password"
+                                type="password"
+                                id="newpassword"
+                                autoComplete="new-password"
+                                onChange={(e) => {
+                                    setPassword(e.target.value)
+                                }}
+                            />
+                             <TextField
+                                margin="normal"
+                                required
+                                fullWidth
                                 name="password"
                                 label="Password"
                                 type="password"
-                                id="password"
+                                id="confirmPassword"
                                 autoComplete="current-password"
                                 onChange={(e) => {
                                     setPassword(e.target.value)
@@ -157,22 +167,10 @@ function Login() {
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
-                                onClick={loginHandler}
+                                onClick={proceedChangePassword}
                             >
-                                Sign In
+                               Change Password
                             </Button>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2">
-                                        Forgot password?
-                                    </Link>
-                                </Grid>
-                                <Grid item>
-                                    <Link  to={'/signup'}>
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
-                                </Grid>
-                            </Grid>
                         </Box>
                     </Box>
                     {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
@@ -185,4 +183,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default ChangePassword;
