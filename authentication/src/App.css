@@ -1,0 +1,41 @@
+header{
+  background-color: dimgrey;
+}
+*{
+  padding: 0px;
+  margin: 0px;
+}
+.navBar {
+ display: flex;
+ list-style-type: none;
+ justify-content: right;
+ /* justify-content: center; */
+ background-color: gray   ;
+}
+.navBar > li{
+ /* border: 1px solid black; */
+ padding: 10px;
+ margin: 5px;
+ border-radius: 20px;
+
+}
+
+.navBar > li > a {
+ /* padding: 10px; */
+ text-decoration: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
