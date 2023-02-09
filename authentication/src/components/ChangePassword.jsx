@@ -38,7 +38,7 @@ function ChangenewPassword() {
 
     let { state, dispatch } = useContext(GlobalContext);
     const [result, setResult] = useState("")
-    const [currentnewPassword, setcurrentnewPassword] = useState("");
+    const [currentPassword, setcurrentPassword] = useState("");
     const [newPassword, setnewPassword] = useState("");
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -49,13 +49,13 @@ function ChangenewPassword() {
         });
     };
 
-    const proceedChangenewPassword = async (e) => {
+    const proceedChangePassword = async (e) => {
 
         e.preventDefault();
 
         try {
-            let response = await axios.post(`${state.baseUrl}/change-Password`, {
-                currentnewPassword: currentnewPassword,
+            let response = await axios.post(`${state.baseUrl}/change-password`, {
+                currentPassword: currentPassword,
                 newPassword: newPassword
             }, {
                 withCredentials: true
@@ -120,25 +120,25 @@ function ChangenewPassword() {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="curentnewPassword"
-                                type="newPassword"
-                                label="Current newPassword"
-                                name="currentnewPassword"
-                                autoComplete="newPassword"
+                                id="curentPassword"
+                                type="Password"
+                                label="Current Password"
+                                name="currentPassword"
+                                autoComplete="Password"
                                 autoFocus
                                 onChange={(e) => {
-                                    setcurrentnewPassword(e.target.value)
+                                    setcurrentPassword(e.target.value)
                                 }}
                             />
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="new-newPassword"
-                                label="New newPassword"
+                                name="newPassword"
+                                label="newPassword"
                                 type="newPassword"
-                                id="newnewPassword"
-                                autoComplete="new-newPassword"
+                                id="newPassword"
+                                autoComplete="newPassword"
                                 onChange={(e) => {
                                     setnewPassword(e.target.value)
                                 }}
@@ -165,7 +165,7 @@ function ChangenewPassword() {
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
-                                onClick={proceedChangenewPassword}
+                                onClick={proceedChangePassword}
                             >
                                 Change newPassword
                             </Button>

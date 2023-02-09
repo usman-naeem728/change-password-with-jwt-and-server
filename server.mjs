@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import AuthApis from './apis/auth.mjs'
 import ProductApis from './apis/product.mjs'
 import { userModel } from './dbRepo/models.mjs';
+import { stringToHash, varifyHash } from 'bcrypt-inzi'
 
 const port = process.env.PORT || 5001;
 const app = express()
@@ -73,14 +74,14 @@ app.use("/api/v1", (req, res, next) => {
     return;
   }
 
-  jwt.verify(req.cookies.Token, SECRET, function (err, decodedData) {
+  jwt.verify(req.cookies.Token, SECRET, function (err, decodeduser) {
     if (!err) {
-      console.log("decodedData :", decodedData)
+      console.log("decodeduser :", decodeduser)
       const nowDate = new Date().getTime() / 1000;
 
 
 
-      if (decodedData.exp < nowDate) {
+      if (decodeduser.exp < nowDate) {
         res.status(401)
         res.cookie('Token', '', {
           maxAge: 1,
@@ -96,7 +97,7 @@ app.use("/api/v1", (req, res, next) => {
 
         console.log("token approved");
 
-        req.body.token = decodedData
+        req.body.token = decodeduser
         next();
       }
     }
@@ -115,65 +116,39 @@ app.get('/api/v1/profile', getUser)
 
 app.get('/api/v1/profile/:id', getUser)
 
-app.post('/api/v1/change-password', (req, res) => {
-  const body = req.body;
+app.post('/api/v1/change-password', async (req, res) => {
+  try {
+    const body = req.body;
 
-  const currentPassword = body.currentPassword;
-  const newPassword = body.newPassword;
-  const _id = req.body.token._id
+    const currentPassword = body.currentPassword;
+    const newPassword = body.newPassword;
+    const _id = req.body.token._id
 
-  // check if user exist
-  userModel.findOne({ _id : _id },
-    "password ",
-    (err, data) => {
-      if (!err) {
-        console.log("data: ", data);
+    // check if user exist
+    const user = await userModel.findOne({ _id: _id },
+      "password ",
+    ).exec()
 
-        //user found
-        if (data) {
-          varifyHash(currentPassword, data.password).then(isMatched => {
-            console.log("isMatched: ", isMatched);
+    if (!user) throw new Error("user not find")
+    //user found
+    const isMatched = await varifyHash(currentPassword, user.password)
+    console.log("isMatched: ", isMatched);
 
-            if (isMatched) {
-              stringToHash(newPassword).then((newHash)=>{
-                userModel
-              }) 
-
-              res.send({
-                message: "Login Succesful",
-                profile: {
-                  email: data.email,
-                  firstName: data.firstName,
-                  lastName: data.lastName,
-                  age: data.age,
-                  _id: data._id
-                }
-              });
-              return;
-
-            } else {
-              console.log("password did not match");
-              res.status(401).send({ message: "Incorrect email or password" });
-              return;
-            }
+    if (!isMatched) throw new Error("password missmatch")
 
 
-          });
+    const newHash = await stringToHash(newPassword);
 
-        } else {
-          console.log("user not found");
-          res.status(401).send({ message: "user not found" });
-          return;
-        }
-      }
-      else {
-        console.log("db error: ", err);
-        res.status(500).send({ message: "login failed, please try later" });
-        return;
-      }
+    await userModel.updateOne({ _id: _id }, { password: newHash })
+    res.send({
+      message: "password change Succesfully"
     });
+    return;
 
-
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).send("error");
+  }
 })
 
 const __dirname = path.resolve();
