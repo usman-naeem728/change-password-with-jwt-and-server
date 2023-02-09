@@ -34,28 +34,29 @@ function Copyright(props) {
 const theme = createTheme();
 
 
-function ChangePassword() {
+function ChangenewPassword() {
 
     let { state, dispatch } = useContext(GlobalContext);
-    const [oldpassword, setoldpassword] = useState("");
-    const [password, setPassword] = useState("");
+    const [result, setResult] = useState("")
+    const [currentnewPassword, setcurrentnewPassword] = useState("");
+    const [newPassword, setnewPassword] = useState("");
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         console.log({
-            oldpassword: data.get('oldpassword'),
-            password: data.get('password'),
+            currentnewPassword: data.get('currentnewPassword'),
+            newPassword: data.get('newPassword'),
         });
     };
 
-    const proceedChangePassword = async (e) => {
+    const proceedChangenewPassword = async (e) => {
 
         e.preventDefault();
 
         try {
-            let response = await axios.post(`${state.baseUrl}/api/v1/login`, {
-                oldpassword: oldpassword,
-                password: password
+            let response = await axios.post(`${state.baseUrl}/change-Password`, {
+                currentnewPassword: currentnewPassword,
+                newPassword: newPassword
             }, {
                 withCredentials: true
             })
@@ -69,14 +70,11 @@ function ChangePassword() {
             //     progress: undefined,
             //     theme: "light",
             //     });
-            dispatch({
-                type: 'USER_LOGIN',
-                payload: response.data.profile
-            })
 
             console.log("Login  successful");
+            setResult("password change sucessfully")
 
-
+            e.reset()
         }
         catch (err) {
             console.log("err: ", err);
@@ -115,47 +113,47 @@ function ChangePassword() {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
-                           Change Password
+                            Change newPassword
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="curentpassword"
-                                type="password"
-                                label="Current Password"
-                                name="oldpassword"
-                                autoComplete="password"
+                                id="curentnewPassword"
+                                type="newPassword"
+                                label="Current newPassword"
+                                name="currentnewPassword"
+                                autoComplete="newPassword"
                                 autoFocus
                                 onChange={(e) => {
-                                    setoldpassword(e.target.value)
+                                    setcurrentnewPassword(e.target.value)
                                 }}
                             />
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="new-password"
-                                label="New Password"
-                                type="password"
-                                id="newpassword"
-                                autoComplete="new-password"
+                                name="new-newPassword"
+                                label="New newPassword"
+                                type="newPassword"
+                                id="newnewPassword"
+                                autoComplete="new-newPassword"
                                 onChange={(e) => {
-                                    setPassword(e.target.value)
+                                    setnewPassword(e.target.value)
                                 }}
                             />
-                             <TextField
+                            <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="confirmPassword"
-                                autoComplete="current-password"
+                                name="newPassword"
+                                label="newPassword"
+                                type="newPassword"
+                                id="confirmnewPassword"
+                                autoComplete="current-newPassword"
                                 onChange={(e) => {
-                                    setPassword(e.target.value)
+                                    setnewPassword(e.target.value)
                                 }}
                             />
                             <FormControlLabel
@@ -167,9 +165,9 @@ function ChangePassword() {
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
-                                onClick={proceedChangePassword}
+                                onClick={proceedChangenewPassword}
                             >
-                               Change Password
+                                Change newPassword
                             </Button>
                         </Box>
                     </Box>
@@ -183,4 +181,4 @@ function ChangePassword() {
     );
 }
 
-export default ChangePassword;
+export default ChangenewPassword;
